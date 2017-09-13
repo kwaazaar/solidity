@@ -52,6 +52,3 @@ DIR=$(mktemp -d)
     npm run test
 )
 rm -rf "$DIR"
-
-echo "Running external tests...."
-"$REPO_ROOT/test/externalTests.sh" "$SOLJSON"

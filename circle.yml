@@ -79,6 +79,10 @@ jobs:
           name: Test
           command: |
             export PATH=$(pwd)/node-v6.11.3-linux-x64/bin:$PATH
-            git config --global user.email "circleci@circleci.com"
-            git config --global user.name "Circle CI"
             scripts/test_emscripten.sh
+
+      - run:
+          name: External tests
+          command: |
+            export PATH=$(pwd)/node-v6.11.3-linux-x64/bin:$PATH
+            test/externalTests.sh build/solc/soljson.js
