@@ -14,10 +14,12 @@ jobs:
       - run:
           name: Test external tests deps
           command: |
-            export NVM_DIR="/usr/local/nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+            . /usr/local/nvm/nvm.sh
             nvm --version
             nvm install 6
+            nvm use 6
+            which node
+            which npm
             node --version
             npm --version
       - run:
@@ -88,4 +90,5 @@ jobs:
           name: External tests
           command: |
             . /usr/local/nvm/nvm.sh
+            npm install ethereumjs-testrpc@4.1.1
             test/externalTests.sh "$(pwd)/build/solc/soljson.js"
