@@ -10,7 +10,14 @@ jobs:
           command: |
             apt-get -qq update
             apt-get -qy install netcat curl
-            curl -s https://nodejs.org/dist/v6.11.3/node-v6.11.3-linux-x64.tar.xz | tar Jx
+            curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.4/install.sh | NVM_DIR=/usr/local/nvm bash
+      - run:
+          name: Test external tests deps
+          command: |
+            export NVM_DIR="/usr/local/nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+            nvm --version
+            nvm install 6
       - run:
           name: Init submodules
           command: |
@@ -69,12 +76,6 @@ jobs:
 
             echo "Emscripten output size: $OUTPUT_SIZE"
 
-      - run:
-          name: Install external tests deps
-          command: |
-            apt-get -qq update
-            apt-get -qy install netcat curl
-            curl -s https://nodejs.org/dist/v6.11.3/node-v6.11.3-linux-x64.tar.xz | tar Jx
       - run:
           name: Test
           command: |
