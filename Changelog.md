@@ -3,6 +3,7 @@
 Features:
  * Code Generator: Added ``.selector`` member on external function types to retrieve their signature.
  * Optimizer: Add new optimization step to remove unused ``JUMPDEST``s.
+ * Support passing ``structs`` as arguments and return parameters.
  * Type Checker: Display helpful warning for unused function arguments/return parameters.
  * Type Checker: Do not show the same error multiple times for events.
  * Type Checker: Greatly reduce the number of duplicate errors shown for duplicate constructors and functions.
