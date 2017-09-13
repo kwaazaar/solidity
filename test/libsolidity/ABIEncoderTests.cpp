@@ -25,6 +25,8 @@
 #include <libsolidity/interface/Exceptions.h>
 #include <test/libsolidity/SolidityExecutionFramework.h>
 
+#include <test/libsolidity/ABITestsCommon.h>
+
 using namespace std;
 using namespace std::placeholders;
 using namespace dev::test;
@@ -41,20 +43,6 @@ namespace test
 	BOOST_CHECK_EQUAL(m_logs[0].address, m_contractAddress); \
 	BOOST_CHECK_EQUAL(toHex(m_logs[0].data), toHex(DATA)); \
 } while (false)
-
-static string const NewEncoderPragma = "pragma experimental ABIEncoderV2;\n";
-
-#define NEW_ENCODER(CODE) \
-{ \
-	sourceCode = NewEncoderPragma + sourceCode; \
-	{ CODE } \
-}
-
-#define BOTH_ENCODERS(CODE) \
-{ \
-	{ CODE } \
-	NEW_ENCODER(CODE) \
-}
 
 BOOST_FIXTURE_TEST_SUITE(ABIEncoderTest, SolidityExecutionFramework)
 

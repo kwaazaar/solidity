@@ -331,7 +331,7 @@ void ContractCompiler::appendCalldataUnpacker(TypePointers const& _typeParameter
 		auto stackHeightBefore = m_context.stackHeight();
 		CompilerUtils utils(m_context);
 		utils.abiDecode(_typeParameters, _fromMemory);
-		solAssert(stackHeightBefore - m_context.stackHeight() == utils.sizeOnStack(_typeParameters), "");
+		solAssert(m_context.stackHeight() - stackHeightBefore == utils.sizeOnStack(_typeParameters) - 1, "");
 		return;
 	}
 
@@ -905,6 +905,7 @@ void ContractCompiler::appendMissingFunctions()
 	}
 	m_context.appendMissingLowLevelFunctions();
 	string abiFunctions = m_context.abiFunctions().requestedFunctions();
+//	cout << abiFunctions << endl;
 	if (!abiFunctions.empty())
 		m_context.appendInlineAssembly("{" + move(abiFunctions) + "}", {}, true);
 }

@@ -26,6 +26,9 @@
 
 #include <libsolidity/ast/AST.h>
 
+#include <boost/algorithm/string/join.hpp>
+#include <boost/range/adaptor/reversed.hpp>
+
 using namespace std;
 using namespace dev;
 using namespace dev::solidity;
@@ -110,7 +113,6 @@ string ABIFunctions::tupleDecoder(TypePointers const& _types, bool _fromMemory)
 	return createFunction(functionName, [&]() {
 		solAssert(!_types.empty(), "");
 
-		// Note that the return values have to be in reverse due to the difference in calling semantics.
 		Whiskers templ(R"(
 			function <functionName>(headStart, dataEnd) -> <valueReturnParams> {
 				switch slt(sub(dataEnd, headStart), <minimumSize>) case 1 { revert(0, 0) }
@@ -121,7 +123,7 @@ string ABIFunctions::tupleDecoder(TypePointers const& _types, bool _fromMemory)
 		templ("minimumSize", to_string(headSize(_types)));
 
 		string decodeElements;
-		string valueReturnParams;
+		vector<string> valueReturnParams;
 		size_t headPos = 0;
 		size_t stackPos = 0;
 		for (size_t i = 0; i < _types.size(); ++i)
@@ -129,11 +131,11 @@ string ABIFunctions::tupleDecoder(TypePointers const& _types, bool _fromMemory)
 			solAssert(_types[i], "");
 			size_t sizeOnStack = _types[i]->sizeOnStack();
 			solAssert(sizeOnStack > 0, "");
-			string valueNames = "";
+			vector<string> valueNamesLocal;
 			for (size_t j = 0; j < sizeOnStack; j++)
 			{
-				valueNames += "value" + to_string(stackPos) + ", ";
-				valueReturnParams = ", value" + to_string(stackPos) + valueReturnParams;
+				valueNamesLocal.push_back("value" + to_string(stackPos));
+				valueReturnParams.push_back("value" + to_string(stackPos));
 				stackPos++;
 			}
 			bool dynamic = _types[i]->isDynamicallyEncoded();
@@ -148,13 +150,13 @@ string ABIFunctions::tupleDecoder(TypePointers const& _types, bool _fromMemory)
 				}
 			)");
 			elementTempl("load", _fromMemory ? "mload" : "calldataload");
-			elementTempl("values", valueNames);
+			elementTempl("values", boost::algorithm::join(valueNamesLocal, ", "));
 			elementTempl("pos", to_string(headPos));
 			elementTempl("abiDecode", abiDecodingFunction(*_types[i], _fromMemory));
 			decodeElements += elementTempl.render();
 			headPos += dynamic ? 0x20 : _types[i]->decodingType()->calldataEncodedSize();
 		}
-		templ("valueReturnParams", valueReturnParams);
+		templ("valueReturnParams", boost::algorithm::join(valueReturnParams, ", "));
 		templ("decodeElements", decodeElements);
 
 		return templ.render();
@@ -1060,7 +1062,7 @@ string ABIFunctions::abiDecodingFunction(Type const& _type, bool _fromMemory)
 		)");
 		templ("functionName", functionName);
 		templ("load", _fromMemory ? "mload" : "calldataload");
-		templ("cleanup", cleanupFunction(_type, true) + "(value)");
+		templ("cleanup", cleanupFunction(_type, true));
 		return templ.render();
 	});
 }

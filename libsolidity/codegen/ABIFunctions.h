@@ -70,7 +70,7 @@ public:
 	/// into memory. If @a _fromMemory is true, decodes from memory instead of
 	/// from calldata.
 	/// Can allocate memory.
-	/// Inputs: <source_offset> <source_end>
+	/// Inputs: <source_offset> <source_end> (layout reversed on stack)
 	/// Outputs: <value0> <value1> ... <valuen>
 	/// The values represent stack slots. If a type occupies more or less than one
 	/// stack slot, it takes exactly that number of values.
