@@ -42,8 +42,7 @@ DIR=$(mktemp -d)
     git clone --depth 1 https://github.com/OpenZeppelin/zeppelin-solidity.git "$DIR"
     cd "$DIR"
     npm install
-    ls -R | grep ":$" | sed -e 's/:$//' -e 's/[^-][^\/]*\//--/g' -e 's/^/   /' -e 's/-/|/'
-    mkdir -p node_modules/solc
+#    mkdir -p node_modules/solc
     cp "$SOLJSON" node_modules/solc/soljson.js
     npm run test
 )

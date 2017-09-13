@@ -88,4 +88,4 @@ jobs:
           name: External tests
           command: |
             . /usr/local/nvm/nvm.sh
-            test/externalTests.sh build/solc/soljson.js
+            test/externalTests.sh "$(pwd)/build/solc/soljson.js"
