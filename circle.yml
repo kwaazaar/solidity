@@ -18,6 +18,8 @@ jobs:
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
             nvm --version
             nvm install 6
+            node --version
+            npm --version
       - run:
           name: Init submodules
           command: |
@@ -79,11 +81,11 @@ jobs:
       - run:
           name: Test
           command: |
-            export PATH=$(pwd)/node-v6.11.3-linux-x64/bin:$PATH
+            . /usr/local/nvm/nvm.sh
             scripts/test_emscripten.sh
 
       - run:
           name: External tests
           command: |
-            export PATH=$(pwd)/node-v6.11.3-linux-x64/bin:$PATH
+            . /usr/local/nvm/nvm.sh
             test/externalTests.sh build/solc/soljson.js
